@@ -56,7 +56,9 @@
 
 <template name="docMeta">
     {{#with document}}
-    <span class="h1">{{title}}</span>
+    <span class="h1">
+        {{> editableText context=document collection="documents" field="title"}}
+    </span>
     {{/with}}
 </template>
 
