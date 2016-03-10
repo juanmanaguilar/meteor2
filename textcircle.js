@@ -5,13 +5,8 @@ if (Meteor.isClient) {
     
     Template.editor.helpers({
         docid: function(){
-            var doc = Documents.findOne();
-            if (doc){
-                return doc._id;
-            }
-            else {
-                return undefined;
-            }
+            setupCurrentDocument();
+            return Session.get("docid");
         },
         config: function(){
             return function(editor) {
@@ -104,6 +99,16 @@ Meteor.methods({
         EditingUsers.upsert({_id:eusers._id}, eusers);
     }
 })
+
+function setupCurrentDocument(){
+    var doc;
+    if (!Session.get("docid")) {
+        doc = Documents.findOne();
+        if (doc) {
+            Session.set("docid", doc._id);
+        }
+    }
+}
 
 // this renames object keys by removing hyphens to make the compatible 
 // with spacebars. 
