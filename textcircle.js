@@ -3,6 +3,12 @@ EditingUsers = new Mongo.Collection("editingUsers");
 
 if (Meteor.isClient) {
     
+    Template.navbar.helpers({
+       documents: function(){
+           return Documents.find({});
+       }, 
+    });
+    
     Template.editor.helpers({
         docid: function(){
             setupCurrentDocument();
@@ -59,6 +65,10 @@ if (Meteor.isClient) {
                     }
                 });
             }            
+        },
+        "click .js-load-doc": function(event){
+            console.log(this);
+            Session.set("docid", this._id);
         }
     })
  
