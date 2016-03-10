@@ -15,12 +15,17 @@ if (Meteor.isClient) {
         },
         config: function(){
             return function(editor) {
+                editor.setOption("lineNumbers", true);
+                editor.setOption("theme", "cobalt");
+                // set a callback that gets triggered whenever the user
+                // makes a change in the code editing window
                 editor.on("change", function(cm_editor, info){
-                    $("#viewer_iframe").contents().find("html").html(cm_editor.getValue());
-                    Meteor.call("addEditingUser");
-                });
-            };
-        }
+                  // send the current code over to the iframe for rendering
+                  $("#viewer_iframe").contents().find("html").html(cm_editor.getValue());
+                  Meteor.call("addEditingUser");
+                });        
+            }
+        },
     });
     
     Template.editingUsers.helpers({

@@ -29,13 +29,14 @@
 </body>
 
 <template name="editingUsers">
+    Editors:
     {{#each users}}
-        {{firstname}}
+        <span class="label label-success">{{firstname}}</span> 
     {{/each}}
 </template>
 
 <template name="editor">
-  {{> sharejsCM docid=docid onRender=config id="editor"}}
+  {{> sharejsCM docid=docid onRender=config id="editor" mode="javascript"}}
 </template>
 
 <template name="viewer">
