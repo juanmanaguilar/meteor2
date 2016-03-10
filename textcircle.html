@@ -8,6 +8,11 @@
   <div class="container top-margin">
       <div class="row">
         <div class="col-md-12">
+            {{> docMeta}}
+        </div>
+      </div> 
+      <div class="row">
+        <div class="col-md-12">
             {{> editingUsers}}
         </div>
       </div> 
@@ -22,6 +27,7 @@
   </div>  
   
 </body>
+
 
 <template name="navbar">
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -47,6 +53,13 @@
       </div>
     </nav>
 </template>
+
+<template name="docMeta">
+    {{#with document}}
+    <span class="h1">{{title}}</span>
+    {{/with}}
+</template>
+
 
 <template name="editingUsers">
     Editors:
