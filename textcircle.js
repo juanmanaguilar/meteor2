@@ -5,8 +5,6 @@ if (Meteor.isClient) {
     
     Template.editor.helpers({
         docid: function(){
-//            console.log("editor helper");
-//            console.log(Documents.findOne());
             var doc = Documents.findOne();
             if (doc){
                 return doc._id;
@@ -18,12 +16,28 @@ if (Meteor.isClient) {
         config: function(){
             return function(editor) {
                 editor.on("change", function(cm_editor, info){
-//                    console.log(cm_editor.getValue());
                     $("#viewer_iframe").contents().find("html").html(cm_editor.getValue());
                     Meteor.call("addEditingUser");
                 });
             };
         }
+    });
+    
+    Template.editingUsers.helpers({
+       users: function(){
+           var doc, eusers, users;
+           doc = Documents.findOne();
+           if (!doc) {return;}
+           eusers = EditingUsers.findOne({docid: doc._id});
+           if (!eusers) {return;}
+           users = new Array();
+           var i = 0;
+           for (var user_id in eusers.users){
+               users[i] = fixObjectKeys(eusers.users[user_id]);
+               i++;
+           }
+           return users;
+       } 
     });
  
 }
@@ -58,3 +72,14 @@ Meteor.methods({
         EditingUsers.upsert({_id:eusers._id}, eusers);
     }
 })
+
+// this renames object keys by removing hyphens to make the compatible 
+// with spacebars. 
+function fixObjectKeys(obj){
+  var newObj = {};
+  for (key in obj){
+    var key2 = key.replace("-", "");
+    newObj[key2] = obj[key];
+  }
+  return newObj;
+}
