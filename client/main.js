@@ -1,6 +1,23 @@
     Meteor.subscribe("documents");
     Meteor.subscribe("editingUsers");
     
+    Router.configure({
+      layoutTemplate: 'ApplicationLayout'
+    });
+
+    Router.route('/', function () {
+      console.log("You hit  /")
+      this.render('navbar', {to: "header"});
+      this.render('docList', {to: "main"});
+    });
+
+    Router.route('/documents/:_id', function () {
+      Session.set("docid",this.params._id);
+      console.log("You hit /documents/"+this.params._id);
+      this.render('navbar', {to: "header"});
+      this.render('docItem', {to: "main"});
+    });
+
     Template.navbar.helpers({
        documents: function(){
            return Documents.find();
@@ -66,6 +83,12 @@
            }
            return users;
        } 
+    });
+
+    Template.docList.helpers({
+       documents: function(){
+           return Documents.find();
+       }, 
     });
     
 ///////
