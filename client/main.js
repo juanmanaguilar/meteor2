@@ -1,8 +1,3 @@
-this.Documents = new Mongo.Collection("documents");
-EditingUsers = new Mongo.Collection("editingUsers");
-
-if (Meteor.isClient) {
-    
     Meteor.subscribe("documents");
     Meteor.subscribe("editingUsers");
     
@@ -106,91 +101,24 @@ if (Meteor.isClient) {
             Meteor.call("updateDocPrivacy", doc);
         }
     })
- 
-}
-
-if (Meteor.isServer) {
-    Meteor.startup(function () {
-    // code to run on server at startup
-      if (!Documents.findOne()){
-          Documents.insert({title: "My new document"});
-      }
-    });
-
-      
-    Meteor.publish("documents", function(){
-        return Documents.find({
-                                $or: [ {isPrivate: false},
-                                      {owner: this.userId}
-                                    ]
-                                });
-    });  
     
-    Meteor.publish("editingUsers", function(){
-        return EditingUsers.find();
-    }); 
-}
-
-Meteor.methods({
-    addDoc: function(){
+    function setupCurrentDocument(){
         var doc;
-        if (!this.userId){
-            return;
-        }
-        else {
-            doc = {owner: this.userId, createdOn: new Date(), title: "My new doc"};
-            var id = Documents.insert(doc);
-            console.log("addDoc method got an id: "+id);
-            return id;
-        }
-    },
-    updateDocPrivacy: function(doc){
-        console.log("updateDocPrivacy method");
-        console.log(doc);
-        var realDoc = Documents.findOne({_id: doc._id, owner: this.userId});
-        if (realDoc) {
-            realDoc.isPrivate = doc.isPrivate;
-            Documents.update({_id: doc._id}, realDoc);
-        }
-    },
-    addEditingUser: function(){
-        var doc, user, eusers;
-        doc = Documents.findOne();
-        if (!doc){ return; } // No document 
-        if (!this.userId){ return; } // No logged in user
-        // I have a doc and possibly a user
-        user = Meteor.user().profile;
-        eusers = EditingUsers.findOne({docid: doc._id});
-        if (!eusers){
-            eusers = {
-                docid: doc._id,
-                users: {}
-            };    
-        }
-        user.lastEdit = new Date();
-        eusers.users[this.userId] = user; 
-        
-        EditingUsers.upsert({_id:eusers._id}, eusers);
-    }
-})
-
-function setupCurrentDocument(){
-    var doc;
-    if (!Session.get("docid")) {
-        doc = Documents.findOne();
-        if (doc) {
-            Session.set("docid", doc._id);
+        if (!Session.get("docid")) {
+            doc = Documents.findOne();
+            if (doc) {
+                Session.set("docid", doc._id);
+            }
         }
     }
-}
 
-// this renames object keys by removing hyphens to make the compatible 
-// with spacebars. 
-function fixObjectKeys(obj){
-  var newObj = {};
-  for (key in obj){
-    var key2 = key.replace("-", "");
-    newObj[key2] = obj[key];
-  }
-  return newObj;
-}
+    // this renames object keys by removing hyphens to make the compatible 
+    // with spacebars. 
+    function fixObjectKeys(obj){
+      var newObj = {};
+      for (key in obj){
+        var key2 = key.replace("-", "");
+        newObj[key2] = obj[key];
+      }
+      return newObj;
+    }
