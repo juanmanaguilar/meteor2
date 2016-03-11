@@ -3,9 +3,12 @@ EditingUsers = new Mongo.Collection("editingUsers");
 
 if (Meteor.isClient) {
     
+    Meteor.subscribe("documents");
+    Meteor.subscribe("editingUsers");
+    
     Template.navbar.helpers({
        documents: function(){
-           return Documents.find({});
+           return Documents.find({isPrivate: false});
        }, 
     });
     
@@ -97,12 +100,21 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
-  Meteor.startup(function () {
+    Meteor.startup(function () {
     // code to run on server at startup
       if (!Documents.findOne()){
           Documents.insert({title: "My new document"});
       }
-  });
+    });
+
+      
+    Meteor.publish("documents", function(){
+        return Documents.find({isPrivate: false});
+    });  
+    
+    Meteor.publish("editingUsers", function(){
+        return EditingUsers.find();
+    }); 
 }
 
 Meteor.methods({
