@@ -59,11 +59,13 @@
     <span class="h1">
         {{> editableText context=document collection="documents" field="title"}}
     </span>
-    <div class="checkbox">
-    <label>
-      <input type="checkbox" class="js-tog-private">Private
-    </label>
-  </div>
+    {{#if canEdit}}
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="js-tog-private">Private
+        </label>
+      </div>
+    {{/if}}
     {{/with}}
 </template>
 

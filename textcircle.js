@@ -8,7 +8,7 @@ if (Meteor.isClient) {
     
     Template.navbar.helpers({
        documents: function(){
-           return Documents.find({isPrivate: false});
+           return Documents.find();
        }, 
     });
     
@@ -16,6 +16,16 @@ if (Meteor.isClient) {
        document: function(){
            return Documents.findOne({_id: Session.get("docid")});
        },
+       
+       canEdit: function(){
+           var doc = Documents.findOne({_id: Session.get("docid")});
+           if (doc){
+               if (doc.owner == Meteor.userId()) {
+                   return true;
+               }
+           }
+           return false;    
+        }
     });
     
     Template.editableText.helpers({
@@ -34,7 +44,7 @@ if (Meteor.isClient) {
         config: function(){
             return function(editor) {
                 editor.setOption("lineNumbers", true);
-                editor.setOption("theme", "cobalt");
+                editor.setOption("theme", "cobalt");    
                 // set a callback that gets triggered whenever the user
                 // makes a change in the code editing window
                 editor.on("change", function(cm_editor, info){
@@ -109,7 +119,11 @@ if (Meteor.isServer) {
 
       
     Meteor.publish("documents", function(){
-        return Documents.find({isPrivate: false});
+        return Documents.find({
+                                $or: [ {isPrivate: false},
+                                      {owner: this.userId}
+                                    ]
+                                });
     });  
     
     Meteor.publish("editingUsers", function(){
