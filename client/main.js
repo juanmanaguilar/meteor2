@@ -45,7 +45,7 @@
                 editor.on("change", function(cm_editor, info){
                   // send the current code over to the iframe for rendering
                   $("#viewer_iframe").contents().find("html").html(cm_editor.getValue());
-                  Meteor.call("addEditingUser");
+                  Meteor.call("addEditingUser", Session.get("docid"));
                 });        
             }
         },
@@ -54,7 +54,7 @@
     Template.editingUsers.helpers({
        users: function(){
            var doc, eusers, users;
-           doc = Documents.findOne();
+           doc = Documents.findOne({_id: Session.get("docid")});
            if (!doc) {return;}
            eusers = EditingUsers.findOne({docid: doc._id});
            if (!eusers) {return;}
