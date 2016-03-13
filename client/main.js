@@ -90,6 +90,12 @@
            return Documents.find();
        }, 
     });
+
+    Template.insertComentForm.helpers({
+        docid: function(){
+            return Session.get("docid");
+        }
+    });
     
 ///////
 // EVENTS
