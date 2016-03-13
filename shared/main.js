@@ -42,5 +42,14 @@ Meteor.methods({
         eusers.users[this.userId] = user; 
         
         EditingUsers.upsert({_id:eusers._id}, eusers);
+    },
+    addComment: function(comment){
+        console.log("addComment method running!")
+        if(this.userId){
+            comment.createdOn = new Date();
+            comment.userId = this.userId;
+            return Comments.insert(comment);
+        }
+        return;
     }
 })

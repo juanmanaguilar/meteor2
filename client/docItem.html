@@ -17,8 +17,13 @@
         <div class="col-md-6">
             {{> viewer}}
         </div>
-      </div>   
+      </div>
+      {{> insertComentForm}}
     </div>
+</template>
+
+<template name="insertComentForm">
+    {{> quickForm collection="Comments" id="insertComentForm" type="method" meteormethod="addComment" }}
 </template>
 
 <template name="docMeta">
